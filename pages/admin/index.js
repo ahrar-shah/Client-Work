@@ -2,26 +2,39 @@ import { useState, useEffect } from 'react'
 import ProductCard from '../../components/ProductCard'
 
 export default function Admin() {
+  const [auth, setAuth] = useState(false)
   const [products, setProducts] = useState([])
   const [orders, setOrders] = useState([])
   const [form, setForm] = useState({ name: '', price: '', description: '', tag: '', discountSave: '' })
   const [imageBase64, setImageBase64] = useState('')
   const [msg, setMsg] = useState('')
 
+  // 🔒 Auth check on mount
   useEffect(() => {
-    fetchProducts()
-    fetchOrders()
+    const token = localStorage.getItem('adminToken')
+    if (!token) {
+      window.location.href = '/admin/login'
+    } else {
+      setAuth(true)
+      fetchProducts(token)
+      fetchOrders(token)
+    }
   }, [])
 
-  async function fetchProducts() {
-    const r = await fetch('/api/products')
-    const j = await r.json()
-    setProducts(j)
+  async function fetchProducts(token) {
+    const r = await fetch('/api/products', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    if (r.ok) {
+      const j = await r.json()
+      setProducts(j)
+    }
   }
 
-  async function fetchOrders() {
-    // include credentials so cookie is sent with request
-    const r = await fetch('/api/orders', { credentials: 'include' })
+  async function fetchOrders(token) {
+    const r = await fetch('/api/orders', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
     if (r.ok) {
       const j = await r.json()
       setOrders(j)
@@ -49,10 +62,13 @@ export default function Admin() {
   async function upload() {
     setMsg('')
     try {
+      const token = localStorage.getItem('adminToken')
       const r = await fetch('/api/products', {
         method: 'POST',
-        credentials: 'include', // send cookie so server can verify JWT
-        headers: { 'content-type': 'application/json' },
+        headers: {
+          'content-type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
         body: JSON.stringify({ ...form, imageBase64 })
       })
       const j = await r.json()
@@ -60,7 +76,7 @@ export default function Admin() {
         setMsg('Uploaded')
         setForm({ name: '', price: '', description: '', tag: '', discountSave: '' })
         setImageBase64('')
-        fetchProducts()
+        fetchProducts(token)
       } else {
         setMsg('Error: ' + (j.error || 'unauthorized'))
       }
@@ -68,6 +84,8 @@ export default function Admin() {
       setMsg('Upload failed: ' + err.message)
     }
   }
+
+  if (!auth) return <p>Checking auth...</p>
 
   return (
     <div style={{ padding: 20, maxWidth: 1000, margin: '0 auto' }}>
