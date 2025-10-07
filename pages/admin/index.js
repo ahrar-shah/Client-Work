@@ -126,11 +126,13 @@ export default function Admin() {
         {orders.length === 0 && <div>No orders or you are not authorized to view orders.</div>}
         {orders.map(o => (
           <div key={o.id} style={{ border: '1px solid #eee', padding: 8, marginBottom: 8 }}>
-            <div><strong>{o.customerName}</strong> — {o.contact}</div>
-            <div>Method: {o.method} — Total: Rs. {o.total}</div>
-            <ul>{o.items.map((it, i) => (<li key={i}>{it.name} — {it.price}</li>))}</ul>
-            <div>Ordered: {new Date(o.createdAt).toLocaleString()}</div>
-          </div>
+  <div><strong>{o.name}</strong> — {o.contact}</div>
+  <div>Method: {o.method}</div>
+  <div>Address: {o.address}</div>
+  <ul>{o.items.map((it, i) => (<li key={i}>{it.name} — {it.price}</li>))}</ul>
+  <div>Ordered: {new Date(o.createdAt).toLocaleString()}</div>
+  {o.screenshot && <img src={o.screenshot} alt="payment proof" style={{ maxWidth: 200, marginTop: 10 }} />}
+</div>
         ))}
       </div>
     </div>
