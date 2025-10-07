@@ -9,7 +9,7 @@ export default function Admin() {
   const [imageBase64, setImageBase64] = useState('')
   const [msg, setMsg] = useState('')
 
-  // 🔒 Auth check on mount
+  // 🔒 Auth check
   useEffect(() => {
     const token = localStorage.getItem('adminToken')
     if (!token) {
@@ -73,7 +73,7 @@ export default function Admin() {
       })
       const j = await r.json()
       if (r.ok) {
-        setMsg('Uploaded')
+        setMsg('Uploaded ✅')
         setForm({ name: '', price: '', description: '', tag: '', discountSave: '' })
         setImageBase64('')
         fetchProducts(token)
@@ -91,6 +91,7 @@ export default function Admin() {
     <div style={{ padding: 20, maxWidth: 1000, margin: '0 auto' }}>
       <h2>Admin Panel</h2>
 
+      {/* Upload Section */}
       <section style={{ display: 'flex', gap: 20 }}>
         <div style={{ flex: 1 }}>
           <h3>Upload Product</h3>
@@ -121,18 +122,34 @@ export default function Admin() {
 
       <hr style={{ margin: '20px 0' }} />
 
+      {/* Orders Section */}
       <h3>Orders</h3>
       <div>
         {orders.length === 0 && <div>No orders or you are not authorized to view orders.</div>}
         {orders.map(o => (
-          <div key={o.id} style={{ border: '1px solid #eee', padding: 8, marginBottom: 8 }}>
-  <div><strong>{o.name}</strong> — {o.contact}</div>
-  <div>Method: {o.method}</div>
-  <div>Address: {o.address}</div>
-  <ul>{o.items.map((it, i) => (<li key={i}>{it.name} — {it.price}</li>))}</ul>
-  <div>Ordered: {new Date(o.createdAt).toLocaleString()}</div>
-  {o.screenshot && <img src={o.screenshot} alt="payment proof" style={{ maxWidth: 200, marginTop: 10 }} />}
-</div>
+          <div key={o.id} style={{ border: '1px solid #eee', padding: 10, marginBottom: 12 }}>
+            <div><strong>{o.name}</strong> — {o.contact}</div>
+            <div>Address: {o.address}</div>
+            <div>Method: {o.method}</div>
+            <ul>
+              {o.items.map((it, i) => (
+                <li key={i}>{it.name} — Rs.{it.price}</li>
+              ))}
+            </ul>
+            <div>Ordered: {new Date(o.createdAt).toLocaleString()}</div>
+
+            {/* ✅ Payment Screenshot */}
+            {o.screenshot && (
+              <div style={{ marginTop: 10 }}>
+                <p><b>Payment Proof:</b></p>
+                <img 
+                  src={o.screenshot} 
+                  alt="payment proof" 
+                  style={{ maxWidth: '200px', border: '1px solid #ccc', borderRadius: 8 }}
+                />
+              </div>
+            )}
+          </div>
         ))}
       </div>
     </div>
