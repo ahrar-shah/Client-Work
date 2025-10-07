@@ -17,7 +17,6 @@ export default function Home() {
   }
 
   return (
-    <title>PrimaStore</title>
     <div style={{
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%)',
