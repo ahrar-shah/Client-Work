@@ -35,13 +35,15 @@ export default function Checkout() {
   }
 
   return (
-    <div style={{ padding: 20, maxWidth: 700, margin: '0 auto' }}>
-      <h2>Checkout</h2>
-      <p>Simple demo checkout. Add item -> choose method -> place order.</p>
+  <div style={{ padding: 20, maxWidth: 700, margin: '0 auto' }}>
+    <h2>Checkout</h2>
+    <p>
+      Simple demo checkout. Add item {'->'} choose method {'->'} place order.
+    </p>
 
-      <div style={{ margin: '12px 0' }}>
-        <button onClick={addItem}>Add item to cart</button>
-      </div>
+    <div style={{ margin: '12px 0' }}>
+      <button onClick={addItem}>Add item to cart</button>
+    </div>
 
       <ul>
         {items.map((it, i) => (<li key={i}>{it.name} — Rs. {it.price}</li>))}
