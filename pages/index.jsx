@@ -8,9 +8,7 @@ const fetcher = (url) => fetch(url).then(r => r.json())
 export default function Home() {
   const [q, setQ] = useState('')
   const router = useRouter()
-  const { data: products, error } = useSWR(() => `/api/products${q ? `?q=${encodeURIComponent(q)}` : ''}`, fetcher, {
-    revalidateOnFocus: false
-  })
+  const { data: products } = useSWR(() => `/api/products${q ? `?q=${encodeURIComponent(q)}` : ''}`, fetcher)
 
   function openProduct(id) {
     router.push(`/product/${id}`)
@@ -19,193 +17,130 @@ export default function Home() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%)',
+      background: 'linear-gradient(135deg, #0a1929 0%, #152642 100%)',
       color: '#ffffff',
-      fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif'
+      fontFamily: 'Inter, system-ui, sans-serif'
     }}>
       {/* Header */}
       <header style={{
-        background: 'rgba(0, 0, 0, 0.9)',
+        background: 'rgba(30, 58, 95, 0.8)',
         backdropFilter: 'blur(10px)',
-        padding: '1.5rem 2rem',
-        borderBottom: '2px solid #ff4444',
-        boxShadow: '0 4px 20px rgba(255, 68, 68, 0.2)'
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        padding: '20px 0',
+        position: 'sticky',
+        top: 0,
+        zIndex: 100
       }}>
         <div style={{
-          maxWidth: '1200px',
+          maxWidth: 1200,
           margin: '0 auto',
+          padding: '0 20px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '20px'
+          justifyContent: 'space-between'
         }}>
-          <h1 style={{
-            margin: 0,
-            color: '#ff4444',
-            fontSize: '2rem',
-            fontWeight: '700',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px'
-          }}>
-            <span style={{ fontSize: '1.5em' }}>🏪</span>
-            {process.env.NEXT_PUBLIC_SITE_NAME || 'Prima Store'}
-          </h1>
-          
+          {/* Brand */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d4af37" strokeWidth="2">
+              <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+            <h1 style={{
+              fontSize: '2rem',
+              fontWeight: '700',
+              background: 'linear-gradient(135deg, #d4af37 0%, #ffd700 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              margin: 0
+            }}>
+              {process.env.NEXT_PUBLIC_SITE_NAME || 'Prima Store'}
+            </h1>
+          </div>
+
+          {/* Search */}
           <div style={{ position: 'relative' }}>
+            <svg style={{
+              position: 'absolute',
+              left: 16,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: 18,
+              height: 18,
+              color: '#b0b8c4'
+            }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.3-4.3"/>
+            </svg>
             <input
               value={q}
               onChange={e => setQ(e.target.value)}
-              placeholder="🔍 Search products..."
+              placeholder="Search products..."
               style={{
-                padding: '12px 16px 12px 45px',
-                width: '320px',
-                border: '2px solid #333',
-                borderRadius: '25px',
-                background: 'rgba(0, 0, 0, 0.6)',
+                padding: '12px 16px 12px 44px',
+                width: 360,
+                background: 'rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: 8,
                 color: '#ffffff',
-                fontSize: '1rem',
-                outline: 'none',
+                fontSize: 14,
+                backdropFilter: 'blur(10px)',
                 transition: 'all 0.3s ease'
               }}
               onFocus={(e) => {
-                e.target.style.borderColor = '#ff4444'
-                e.target.style.boxShadow = '0 0 0 3px rgba(255, 68, 68, 0.2)'
+                e.target.style.borderColor = '#d4af37'
+                e.target.style.boxShadow = '0 0 0 2px rgba(212, 175, 55, 0.2)'
+                e.target.style.background = 'rgba(255, 255, 255, 0.15)'
               }}
               onBlur={(e) => {
-                e.target.style.borderColor = '#333'
+                e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)'
                 e.target.style.boxShadow = 'none'
+                e.target.style.background = 'rgba(255, 255, 255, 0.1)'
               }}
             />
-            <span style={{
-              position: 'absolute',
-              left: '16px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              fontSize: '1.2rem'
-            }}>🔍</span>
+          </div>
+
+          {/* Cart Icon */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 20
+          }}>
+            <button style={{
+              background: 'none',
+              border: 'none',
+              color: '#d4af37',
+              cursor: 'pointer',
+              padding: 8,
+              borderRadius: 6,
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = 'rgba(212, 175, 55, 0.1)'
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = 'none'
+            }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="9" cy="21" r="1"/>
+                <circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              </svg>
+            </button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main style={{
-        padding: '2rem',
-        maxWidth: '1200px',
-        margin: '0 auto'
+        maxWidth: 1200,
+        margin: '0 auto',
+        padding: '30px 20px'
       }}>
-        {/* Stats Bar */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: '2rem',
-          padding: '1rem 1.5rem',
-          background: 'rgba(30, 30, 30, 0.6)',
-          borderRadius: '12px',
-          border: '1px solid #333'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#ffa726' }}>
-            <span>📊</span>
-            <span>{products ? `${products.length} products found` : 'Loading...'}</span>
-          </div>
-          
-          {q && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              background: 'rgba(255, 68, 68, 0.1)',
-              padding: '8px 16px',
-              borderRadius: '20px',
-              border: '1px solid #ff4444'
-            }}>
-              <span>🔍</span>
-              <span>Searching: "{q}"</span>
-              <button
-                onClick={() => setQ('')}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#ff4444',
-                  cursor: 'pointer',
-                  fontSize: '1.2rem',
-                  padding: '0'
-                }}
-              >
-                ✕
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Products Grid */}
-        {error ? (
-          <div style={{
-            textAlign: 'center',
-            padding: '4rem 2rem',
-            color: '#ff6b6b'
-          }}>
-            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>😞</div>
-            <h3 style={{ marginBottom: '1rem' }}>Failed to load products</h3>
-            <p style={{ color: '#ccc' }}>Please check your connection and try again</p>
-          </div>
-        ) : !products ? (
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '4rem 2rem',
-            gap: '20px'
-          }}>
-            <div style={{ 
-              fontSize: '3rem',
-              animation: 'pulse 1.5s ease-in-out infinite'
-            }}>⏳</div>
-            <h3 style={{ color: '#ffa726' }}>Loading Products...</h3>
-            <style jsx>{`
-              @keyframes pulse {
-                0%, 100% { opacity: 1; }
-                50% { opacity: 0.5; }
-              }
-            `}</style>
-          </div>
-        ) : products.length === 0 ? (
-          <div style={{
-            textAlign: 'center',
-            padding: '4rem 2rem'
-          }}>
-            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🤷‍♂️</div>
-            <h3 style={{ marginBottom: '1rem', color: '#ffa726' }}>No products found</h3>
-            <p style={{ color: '#ccc' }}>
-              {q ? `No products matching "${q}"` : 'No products available at the moment'}
-            </p>
-            {q && (
-              <button
-                onClick={() => setQ('')}
-                style={{
-                  background: 'linear-gradient(45deg, #ff4444, #ff6b6b)',
-                  color: 'white',
-                  border: 'none',
-                  padding: '10px 20px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  marginTop: '1rem',
-                  fontWeight: '600'
-                }}
-              >
-                🔄 Clear Search
-              </button>
-            )}
-          </div>
-        ) : (
+        {products ? (
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: '24px',
-            alignItems: 'start'
+            gap: 24
           }}>
             {products.map(p => (
               <div
@@ -213,82 +148,108 @@ export default function Home() {
                 onClick={() => openProduct(p.id)}
                 style={{
                   cursor: 'pointer',
+                  background: 'rgba(30, 58, 95, 0.6)',
+                  borderRadius: 12,
+                  padding: 16,
+                  border: '1px solid rgba(255,255,255,0.1)',
                   transition: 'all 0.3s ease',
-                  borderRadius: '16px',
-                  overflow: 'hidden'
+                  backdropFilter: 'blur(10px)'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)'
-                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(255, 68, 68, 0.2)'
+                  e.target.style.transform = 'translateY(-4px)'
+                  e.target.style.boxShadow = '0 8px 25px rgba(0,0,0,0.3)'
+                  e.target.style.borderColor = 'rgba(212, 175, 55, 0.3)'
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = 'none'
+                  e.target.style.transform = 'translateY(0)'
+                  e.target.style.boxShadow = 'none'
+                  e.target.style.borderColor = 'rgba(255,255,255,0.1)'
                 }}
               >
                 <ProductCard p={p} />
               </div>
             ))}
           </div>
-        )}
-
-        {/* Footer */}
-        <footer style={{
-          marginTop: '4rem',
-          paddingTop: '2rem',
-          borderTop: '1px solid #333',
-          textAlign: 'center',
-          color: '#888'
-        }}>
+        ) : (
           <div style={{
             display: 'flex',
-            alignItems: 'center',
             justifyContent: 'center',
-            gap: '15px',
-            marginBottom: '1rem'
+            alignItems: 'center',
+            height: '50vh',
+            flexDirection: 'column',
+            gap: 16
           }}>
-            <span>🚀</span>
-            <span>⭐</span>
-            <span>🔥</span>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d4af37" strokeWidth="2">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            <p style={{ color: '#b0b8c4', fontSize: 16 }}>Loading products...</p>
           </div>
-          <p>© 2024 {process.env.NEXT_PUBLIC_SITE_NAME || 'Prima Store'}. All rights reserved.</p>
-        </footer>
+        )}
       </main>
 
-      {/* Quick Actions Floating Button */}
-      {products && products.length > 0 && (
+      {/* Footer */}
+      <footer style={{
+        background: 'rgba(10, 25, 41, 0.9)',
+        borderTop: '1px solid rgba(255,255,255,0.1)',
+        padding: '40px 20px',
+        marginTop: 60
+      }}>
         <div style={{
-          position: 'fixed',
-          bottom: '30px',
-          right: '30px',
-          background: 'linear-gradient(45deg, #ff4444, #ff6b6b)',
-          color: 'white',
-          border: 'none',
-          borderRadius: '50%',
-          width: '60px',
-          height: '60px',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '1.5rem',
-          boxShadow: '0 8px 25px rgba(255, 68, 68, 0.4)',
-          transition: 'all 0.3s ease',
-          zIndex: 100
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'scale(1.1)'
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'scale(1)'
-        }}
-        onClick={() => {
-          window.scrollTo({ top: 0, behavior: 'smooth' })
-        }}
-        >
-          ⬆️
+          maxWidth: 1200,
+          margin: '0 auto',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          gap: 40
+        }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d4af37" strokeWidth="2">
+                <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+              </svg>
+              <h3 style={{ color: '#d4af37', margin: 0 }}>Prima Store</h3>
+            </div>
+            <p style={{ color: '#b0b8c4', lineHeight: 1.6 }}>
+              Premium quality products with exceptional customer service. Your trusted shopping destination.
+            </p>
+          </div>
+
+          <div>
+            <h4 style={{ color: '#ffffff', marginBottom: 16 }}>Quick Links</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {['About Us', 'Contact', 'Shipping', 'Returns'].map(item => (
+                <a key={item} href="#" style={{
+                  color: '#b0b8c4',
+                  textDecoration: 'none',
+                  transition: 'color 0.3s ease'
+                }}
+                onMouseEnter={(e) => e.target.style.color = '#d4af37'}
+                onMouseLeave={(e) => e.target.style.color = '#b0b8c4'}>
+                  {item}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h4 style={{ color: '#ffffff', marginBottom: 16 }}>Contact Info</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4af37" strokeWidth="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+                <span style={{ color: '#b0b8c4' }}>+1 (555) 123-4567</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4af37" strokeWidth="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <span style={{ color: '#b0b8c4' }}>support@primastore.com</span>
+              </div>
+            </div>
+          </div>
         </div>
-      )}
+      </footer>
     </div>
   )
 }
